@@ -1,0 +1,83 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'open-uri'
+
+bundle_data = {
+  :"vim-ruby" => %w[vim-ruby],
+  :"vim-scripts" => %w[AutoTag jQuery matchit.zip Gist.vim IndexedSearch Color-Sampler-Pack ColorSchemeMenuMaker ScrollColors xterm16.vim netrw.vim],
+  :tpope => %w[vim-cucumber vim-fugitive vim-git vim-haml vim-markdown vim-repeat vim-unimpaired vim-surround vim-vividchalk],
+  :RubidiumStudios => %w[vim-rails],
+  :jpalardy => %w[vim-slime],
+  :lucapette => %w[vim-jquery-doc vim-ruby-doc],
+  :astashov => %w[vim-ruby-debugger],
+  :kchmck => %w[vim-coffee-script],
+  :msanders => %w[snipmate.vim],
+  :godlygeek => %w[tabular],
+  :scrooloose => %w[nerdtree nerdcommenter snipmate-snippets],
+  :timcharper => %w[textile.vim],
+  :mileszs => %w[ack.vim],
+  :reinh => %w[vim-makegreen],
+#  :ervandew => %w[supertab],   # -- interferes with snipmate
+#  :wgibbs => %w[vim-irblack],  # -- colorscheme I'm not using
+#  :tomtom => %w[tcomment_vim], # -- not using because we're using nerdcommenter
+  :wincent => %w[Command-T] 
+}
+
+git_bundles = []
+bundle_data.each do |author, scripts|
+  scripts.each do |name|
+    git_bundles << "git://github.com/#{author}/#{name}.git"
+  end
+end
+
+def dos2unix?
+  if defined?(@supported)
+    @supported
+  else
+    @supported = system("which dos2unix >/dev/null")
+  end
+end
+
+# Some people are dumb and use Windows line endings
+def dos2unix(dir)
+  return unless dos2unix?
+  system "find #{dir} -type f -exec dos2unix -q -k {} \\;"
+end
+
+# Install pathogen if its missing
+autoload_dir = File.join(File.dirname(__FILE__), "autoload")
+FileUtils.mkdir_p(autoload_dir) unless File.directory?(autoload_dir)
+`curl -so #{autoload_dir}/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim` if (!File.exists?(File.join(autoload_dir,'pathogen.vim')) or ARGV.include? '--force')
+
+# Install the bundles
+bundles_dir = File.join(File.dirname(__FILE__), "bundle")
+FileUtils.rm_rf(bundles_dir) if File.directory?(bundles_dir)
+FileUtils.mkdir_p(bundles_dir)
+Dir.chdir(bundles_dir) do
+  $stderr.puts "Downloading vim bundles"
+  git_bundles.each do |url|
+    dir = File.basename(url, '.git')
+    label = "  [#{dir}]".ljust(18)
+    $stderr.puts "#{label} -> #{url}"
+    `git clone -q #{url} #{dir}`
+    FileUtils.rm_rf(File.join(dir, ".git"))
+    dos2unix dir
+  end
+end
+
+# Special handling for Command-T
+Dir.chdir(File.join(bundles_dir,"Command-T","ruby/command-t")) do                                                 
+  if `rvm > /dev/null 2>&1` && $?.exitstatus == 1                             
+    system "rvm system ruby extconf.rb"                                           
+  else                                                                        
+    system "/usr/bin/ruby extconf.rb" # assume /usr/bin/ruby is system ruby       
+  end                                                                         
+  system "make clean && make"                                                     
+end                                                                           
+
+# Special handling for scrooloose's snippets -- need to move into a snippets subdirectory to work 
+Dir.chdir(File.join(bundles_dir,"snipmate-snippets")) do
+  system 'mkdir snippets && find . \! -name snippets \! -name '.' -maxdepth 1 -exec mv {} snippets \;'
+end
+
