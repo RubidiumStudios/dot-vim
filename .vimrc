@@ -32,6 +32,8 @@ set laststatus=2
 set number
 set splitbelow
 set splitright
+set showcmd
+set cmdheight=2
 
 " Status Line
 set statusline=   " clear the statusline for when vimrc is reloaded
@@ -93,7 +95,7 @@ let html_output_xhtml=1
 " Backups
 set backup
 set backupcopy=yes  "backup to copy, save over original -- for programs that watch for changes to original files
-set backupdir=~/tmp/vim-backups,. 
+set backupdir=~/tmp/vim-backups,/tmp/vim-backups,. 
 
 " Commands
 set shell=/bin/bash
@@ -107,22 +109,28 @@ let g:slime_target = "tmux"
 let g:rails_level = 3
 let g:rails_menu = 2
 
+" ZoomWin configuration
+map <Leader>z :ZoomWin<CR>
+
 " NERDTree configuration
 let NERDTreeIgnore=['\.rbc$', '\~$']
 let NERDTreeShowHidden=1
-map  <C-D> :NERDTreeToggle<CR>
+map  <C-D> :NERDTreeTabsToggle<CR>
 
 " Command-T configuration
 let g:CommandTMaxHeight=20
 
 function s:setupWrapping()
+  set ft=text
   set wrap
   set wm=2
-  set textwidth=72
+  set textwidth=78
+  set formatoptions+=t
 endfunction
 
 function s:setupMarkup()
   call s:setupWrapping()
+  set ft=markdown
   map <buffer> <Leader>p :Mm <CR>
 endfunction
 
@@ -137,6 +145,7 @@ au BufRead,BufNewFile {Gemfile,Rakefile,Thorfile,config.ru}    set ft=ruby
 au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
 
 au BufRead,BufNewFile *.txt call s:setupWrapping()
+au BufRead,BufNewFile {README,Readme} call s:setupWrapping()
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start

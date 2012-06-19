@@ -5,7 +5,7 @@ require 'open-uri'
 
 bundle_data = {
   :"vim-ruby" => %w[vim-ruby],
-  :"vim-scripts" => %w[AutoTag jQuery matchit.zip Gist.vim IndexedSearch Color-Sampler-Pack ColorSchemeMenuMaker ScrollColors xterm16.vim netrw.vim],
+  :"vim-scripts" => %w[AutoTag jQuery matchit.zip Gist.vim IndexedSearch Color-Sampler-Pack ColorSchemeMenuMaker ScrollColors xterm16.vim netrw.vim ZoomWin],
   :tpope => %w[vim-cucumber vim-fugitive vim-git vim-haml vim-markdown vim-repeat vim-unimpaired vim-surround vim-vividchalk],
   :RubidiumStudios => %w[vim-rails],
   :jpalardy => %w[vim-slime],
@@ -15,6 +15,7 @@ bundle_data = {
   :msanders => %w[snipmate.vim],
   :godlygeek => %w[tabular],
   :scrooloose => %w[nerdtree nerdcommenter snipmate-snippets],
+  :jistr => %w[vim-nerdtree-tabs],
   :timcharper => %w[textile.vim],
   :mileszs => %w[ack.vim],
   :reinh => %w[vim-makegreen],
@@ -67,17 +68,20 @@ Dir.chdir(bundles_dir) do
 end
 
 # Special handling for Command-T
-Dir.chdir(File.join(bundles_dir,"Command-T","ruby/command-t")) do                                                 
-  if `rvm > /dev/null 2>&1` && $?.exitstatus == 1                             
-    system "rvm system ruby extconf.rb"                                           
-  else                                                                        
-    system "/usr/bin/ruby extconf.rb" # assume /usr/bin/ruby is system ruby       
-  end                                                                         
-  system "make clean && make"                                                     
-end                                                                           
+Dir.chdir(File.join(bundles_dir,"Command-T","ruby/command-t")) do
+  if `rvm > /dev/null 2>&1` && $?.exitstatus == 1
+    system "rvm system ruby extconf.rb"
+  else
+    system "/usr/bin/ruby extconf.rb" # assume /usr/bin/ruby is system ruby
+  end
+  system "make clean && make"
+end
 
 # Special handling for scrooloose's snippets -- need to move into a snippets subdirectory to work 
-Dir.chdir(File.join(bundles_dir,"snipmate-snippets")) do
-  system 'mkdir snippets && find . \! -name snippets \! -name '.' -maxdepth 1 -exec mv {} snippets \;'
-end
+# currently disabled because of conflicts
+#Dir.chdir(File.join(bundles_dir,"snipmate-snippets")) do
+  #FileUtils.mkdir('snippets')
+  #FileUtils.rm('Rakefile')
+  #system 'find . \! -name snippets \! -name "." -maxdepth 1 -exec mv {} snippets \;'
+#end
 

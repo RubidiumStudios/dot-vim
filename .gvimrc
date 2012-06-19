@@ -7,8 +7,9 @@ set background=dark
 color vividchalk
 highlight ColorColumn guibg=#0x202028
 
-" Start without the toolbar
+" Start without the toolbar, but with tabbar
 set guioptions-=T
+set showtabline=2
 
 if has("gui_macvim")
   " Fullscreen takes up entire screen
@@ -22,18 +23,15 @@ if has("gui_macvim")
   " Command-/ for Ack
   map <D-/> :Ack<space>
 
-  " Command-3 to toggle comments
-  map <M-3> <plug>NERDCommenterToggle<CR>
+  " Command-> to toggle comments
+  map <D->> <plug>NERDCommenterToggle<CR>
 endif
-
 
 " Tab Navigation
 map  <S-D-Right> :tabnext<CR>
 map! <S-D-Right> <ESC>:tabnext<CR>li
 map  <S-D-Left> :tabprevious<CR>
 map! <S-D-Left> <ESC>:tabprevious<CR>li
-"map  <D-t> :tabnew<CR>:NERDTreeToggle<CR>
-"map! <D-t> <ESC>:tabnew<CR>NERDTree<CR>i
 
 " ConqueTerm wrapper -- disabled currentl
 "map <D->> :call StartTerm()<CR>
@@ -43,9 +41,9 @@ map! <S-D-Left> <ESC>:tabprevious<CR>li
 "endfunction
 
 " Project Tree
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
-autocmd VimEnter * call s:CdIfDirectory(expand("<amatch>"))
+au VimEnter * NERDTree
+au VimEnter * wincmd p
+au VimEnter * call s:CdIfDirectory(expand("<amatch>"))
 
 " Disable netrw's autocmd, since we're ALWAYS using NERDTree
 runtime plugin/netRwPlugin.vim

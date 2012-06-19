@@ -1,0 +1,60 @@
+This is the vimfiles that I use.  It uses Tim Pope's awesome Pathogen library
+to manage vim bundles in a sane and separated manner for easy addition and
+removal of bundles.  This has only been tested on Mac OS X.
+
+Current bundles used are:
+  vim-ruby:
+    vim-ruby
+  vim-scripts:
+    AutoTag,jQuery,matchit.zip,Gist.vim,IndexedSearch,Color-Sampler-Pack,
+    ColorSchemeMenuMaker,ScrollColors,xterm16.vim,netrw.vim,ZoomWin
+  tpope:
+    vim-cucumber,vim-fugitive,vim-git,vim-haml,vim-markdown,vim-repeat,
+    vim-unimpaired,vim-surround,vim-vividchalk
+  RubidiumStudios:
+    vim-rails (fork of tpope's vim-rails with the menu restored)
+  jpalardy:
+    vim-slime
+  lucapette:
+    vim-jquery-doc,vim-ruby-doc
+  astashov:
+    vim-ruby-debugger
+  kchmck:
+    vim-coffee-script
+  msanders:
+    snipmate.vim
+  godlygeek:
+    tabular
+  scrooloose:
+    nerdtreei,nerdcommenter,snipmate-snippets
+  jistr:
+    vim-nerdtree-tabs
+  timcharper:
+    textile.vim
+  mileszs:
+    ack.vim
+  reinh:
+    vim-makegreen
+  wincent:
+    Command-TA
+
+INSTALLATION
+============
+
+Run the following commands in your $HOME directory (backup your existing
+.vimrd, .gvimrc, and .vim/ files first) 
+
+git clone git://github.com/RubidiumStudios/dot-vim.git .vim
+ln -sin .vim/.vimrc .vimrc
+ln -sin .vim/.gvimrc .gvimrc
+cd .vim
+ruby update_bundles
+
+TODO
+====
+
+The scrooloose snippets are currently disabled because they conflict with the
+existing snipmate default snippets -- if you want to use them and don't mind
+the warnings generated every time you open a file, uncomment the
+scrooloose/snipmate-snippets section at the bottom of update_bundles
+
